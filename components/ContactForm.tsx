@@ -1,0 +1,7 @@
+"use client";
+import { useState } from "react";
+export default function ContactForm() {
+  const [done,setDone]=useState(false);
+  if(done) return <div className="border border-black/20 p-8"><h3 className="text-3xl font-medium">Thanks — your demo inquiry is ready.</h3><p className="mt-3 text-black/60">Connect this form to your CRM, email provider, or API route before launch.</p></div>;
+  return <form onSubmit={(e)=>{e.preventDefault();setDone(true)}} className="grid gap-5"><label>Full name<input required className="mt-2 w-full border border-black/25 bg-transparent p-4 outline-none focus:border-black" placeholder="First and last name"/></label><label>Email<input required type="email" className="mt-2 w-full border border-black/25 bg-transparent p-4 outline-none focus:border-black" placeholder="you@example.com"/></label><label>Phone<input className="mt-2 w-full border border-black/25 bg-transparent p-4 outline-none focus:border-black" placeholder="Phone number"/></label><label>Project type<select className="mt-2 w-full border border-black/25 bg-transparent p-4"><option>Electrical</option><option>HVAC</option><option>Renovation / Retrofit</option><option>Service / Maintenance</option><option>Other</option></select></label><label>Message<textarea rows={5} className="mt-2 w-full border border-black/25 bg-transparent p-4 outline-none focus:border-black" placeholder="Tell us about the project"/></label><button className="mt-2 rounded-full bg-black px-6 py-4 text-xs font-bold uppercase tracking-[.12em] text-white">Send inquiry</button></form>;
+}

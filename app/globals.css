@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #161616;
+  /* --paper: #ffffff; */
+  --paper: #e7edf0;
+  --sand: #ded8ca;
+  --accent: #d2ff39;
+  --muted: #6e6b64;
+  --selection: #f97316;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--ink);
+}
+
+::-moz-selection {
+  background: var(--selection);
+  color: var(--ink);
+}
+
+a {
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Typography */
+.display {
+  font-size: clamp(3.4rem, 8.7vw, 9rem);
+  line-height: 0.86;
+  letter-spacing: -0.065em;
+  font-weight: 500;
+}
+
+.display-md {
+  font-size: clamp(2.7rem, 6vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  font-weight: 500;
+}
+
+.heading {
+  font-size: clamp(2rem, 4.2vw, 4.7rem);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Layout */
+.container-site {
+  width: min(100% - 2rem, 1440px);
+  margin-inline: auto;
+}
+
+.rule {
+  border-top: 1px solid
+    color-mix(in srgb, currentColor 25%, transparent);
+}
+
+/* General Marquee */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Stats Infinite Marquee */
+.stats-marquee-left {
+  animation: statsMarqueeLeft 32s linear infinite;
+  will-change: transform;
+}
+
+.stats-marquee-right {
+  animation: statsMarqueeRight 36s linear infinite;
+  will-change: transform;
+}
+
+/* Pause stats rows on hover */
+.group:hover .stats-marquee-left,
+.group:hover .stats-marquee-right {
+  animation-play-state: paused;
+}
+
+@keyframes statsMarqueeLeft {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+@keyframes statsMarqueeRight {
+  from {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Hero Carousel */
+@keyframes heroReveal {
+  from {
+    opacity: 0;
+    transform: scale(1.035);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes heroContent {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes carouselProgress {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+/* Carousel utility classes */
+.hero-reveal {
+  animation: heroReveal 800ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-content {
+  animation: heroContent 800ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.carousel-progress {
+  animation-name: carouselProgress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* Welcome Loader */
+@keyframes welcomeReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes welcomeText {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes welcomeProgress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Welcome Loader utility classes */
+.welcome-reveal {
+  animation: welcomeReveal 900ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.welcome-text {
+  animation: welcomeText 900ms 300ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.welcome-progress {
+  transform-origin: left;
+  animation: welcomeProgress 1800ms
+    cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .container-site {
+    width: min(100% - 1.2rem, 1440px);
+  }
+}
+
+/* Accessibility / Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-reveal,
+  .hero-content,
+  .carousel-progress,
+  .stats-marquee-left,
+  .stats-marquee-right,
+  .marquee,
+  .welcome-reveal,
+  .welcome-text,
+  .welcome-progress {
+    animation: none !important;
+  }
+}
