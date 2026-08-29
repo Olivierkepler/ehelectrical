@@ -36,9 +36,10 @@ export default function FounderStoryPage() {
         <div className="container-site">
           <p className="eyebrow">Founder&apos;s Story</p>
 
-          <h1 className="display mt-5 max-w-6xl">
+          <h1 className="text-2xl md:text-3xl font-semibold mt-5 max-w-3xl">
             Built one decision, one relationship, and one project at a time.
           </h1>
+     
         </div>
       </section>
 
