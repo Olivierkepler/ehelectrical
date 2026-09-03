@@ -8,6 +8,16 @@
   --accent: #d2ff39;
   --muted: #6e6b64;
   --selection: #f97316;
+
+  /* Kepler product tokens — isolated; do not replace EH variables above */
+  --kepler-navy: #012169;
+  --kepler-red: #e31837;
+  --kepler-ink: #101828;
+  --kepler-secondary: #475467;
+  --kepler-muted: #667085;
+  --kepler-border: rgba(15, 23, 42, 0.08);
+  --kepler-surface: #ffffff;
+  --kepler-background: #f7f8fa;
 }
 
 * {
