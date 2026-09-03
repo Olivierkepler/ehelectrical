@@ -12,14 +12,10 @@ import { ApiError } from "@/lib/kepler/api/client";
 import type { EvidenceListItem } from "@/lib/kepler/api/evidence";
 import {
   buildAssessmentSections,
+  formatAssessmentDeltaHeader,
   matchEvidenceReviewed,
   summaryFetchErrorMessage,
 } from "@/lib/kepler/agentSummaryPresentation";
-import {
-  formatQuantity,
-  formatSignedPercent1,
-  formatSignedQuantity,
-} from "@/lib/kepler/formatQuantity";
 
 export type KeplerAssessmentDeltaContext = {
   planItemLabel: string;
@@ -189,12 +185,7 @@ export default function KeplerAssessmentSheet({
               Delta
             </p>
             <p className="mt-1 text-[13px] leading-snug text-[var(--kepler-secondary)]">
-              Plan {formatQuantity(deltaContext.plannedValue)}{" "}
-              {deltaContext.unit} · Field{" "}
-              {formatQuantity(deltaContext.actualValue)} {deltaContext.unit} ·
-              Variance {formatSignedQuantity(deltaContext.difference)}{" "}
-              {deltaContext.unit} (
-              {formatSignedPercent1(deltaContext.percentDifference)})
+              {formatAssessmentDeltaHeader(deltaContext)}
             </p>
           </div>
         ) : null}
@@ -235,7 +226,7 @@ export default function KeplerAssessmentSheet({
                   <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--kepler-muted)]">
                     {section.eyebrow}
                   </h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-[var(--kepler-ink)]">
+                  <p className="mt-2 break-words text-[14px] leading-relaxed text-[var(--kepler-ink)]">
                     {section.body}
                   </p>
                 </section>
