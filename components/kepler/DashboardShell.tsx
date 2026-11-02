@@ -1,152 +1,46 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import {
-  Activity,
-  FolderKanban,
-  LayoutDashboard,
-  Sparkles,
-} from "lucide-react";
-
 import AppHeader from "@/components/kepler/AppHeader";
 import AppSidebar from "@/components/kepler/AppSidebar";
-import KeplerLogo from "@/components/kepler/KeplerLogo";
 
-const pageTitles: Record<string, string> = {
-  "/dashboard": "Overview",
-  "/projects": "Projects",
-};
-
-const mobileNav = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard, enabled: true, ai: false },
-  { label: "Projects", href: "/projects", icon: FolderKanban, enabled: true, ai: false },
-  { label: "Activity", href: "#", icon: Activity, enabled: false, ai: false },
-  { label: "Kepler AI", href: "#", icon: Sparkles, enabled: false, ai: true },
-] as const;
-
-export default function DashboardShell({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function DashboardShell({ children }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
-  const title =
-    pageTitles[pathname] ??
-    (pathname.startsWith("/projects") ? "Projects" : "Kepler");
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const title = pathname === "/dashboard" ? "Overview" : pathname.startsWith("/projects") ? "Projects" : "Kepler";
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (mobileOpen) {
+      if (!dialog.open) dialog.showModal();
+      const previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => { dialog.close(); document.body.style.overflow = previousOverflow; };
+    }
+    dialog.close();
+  }, [mobileOpen]);
 
   return (
-    <div className="flex min-h-dvh bg-[var(--kepler-background)] text-[var(--kepler-ink)]">
-      <AppSidebar />
-
-      <div className="flex min-w-0 flex-1 flex-col pb-[68px] lg:pb-0">
-        <div className="flex h-[52px] items-center border-b border-[var(--kepler-border)] bg-[var(--kepler-surface)] px-4 lg:hidden">
-          <Link
-            href="/dashboard"
-            className="outline-none focus-visible:ring-2 focus-visible:ring-[var(--kepler-navy)]/30"
-          >
-            <KeplerLogo compact />
-          </Link>
-        </div>
-
-        <AppHeader title={title} />
-
-        <main className="flex-1 overflow-x-hidden px-4 py-6 sm:px-6 lg:px-8 lg:py-7">
-          {children}
-        </main>
-
-        <nav
-          aria-label="Mobile"
-          className="
-            fixed
-            inset-x-0
-            bottom-0
-            z-20
-            border-t
-            border-[var(--kepler-border)]
-            bg-[var(--kepler-surface)]
-            lg:hidden
-          "
-        >
-          <ul className="grid grid-cols-4 px-1 py-1.5">
-            {mobileNav.map((item) => {
-              const Icon = item.icon;
-              const isActive =
-                item.enabled &&
-                (pathname === item.href ||
-                  (item.href === "/projects" &&
-                    pathname.startsWith("/projects")));
-
-              if (!item.enabled) {
-                return (
-                  <li key={item.label}>
-                    <span
-                      title="Coming next"
-                      aria-disabled="true"
-                      className="
-                        flex
-                        min-h-11
-                        cursor-default
-                        flex-col
-                        items-center
-                        justify-center
-                        gap-0.5
-                        px-1
-                        text-[10px]
-                        font-medium
-                        text-[var(--kepler-secondary)]
-                      "
-                    >
-                      <Icon
-                        size={18}
-                        strokeWidth={item.ai ? 1.9 : 1.75}
-                        className={
-                          item.ai
-                            ? "text-[var(--kepler-navy)]/70"
-                            : undefined
-                        }
-                        aria-hidden="true"
-                      />
-                      {item.label}
-                    </span>
-                  </li>
-                );
-              }
-
-              return (
-                <li key={item.label}>
-                  <Link
-                    href={item.href}
-                    aria-current={isActive ? "page" : undefined}
-                    className={`
-                      flex
-                      min-h-11
-                      flex-col
-                      items-center
-                      justify-center
-                      gap-0.5
-                      px-1
-                      text-[10px]
-                      font-medium
-                      outline-none
-                      transition-colors
-                      focus-visible:ring-2
-                      focus-visible:ring-[var(--kepler-navy)]/30
-                      ${
-                        isActive
-                          ? "text-[var(--kepler-navy)]"
-                          : "text-[var(--kepler-secondary)]"
-                      }
-                    `}
-                  >
-                    <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+    <div className="flex min-h-dvh bg-[#F4F6F9] text-[#0D2343] [--kepler-background:#F4F6F9] [--kepler-border:#D9E2EA] [--kepler-ink:#0D2343] [--kepler-muted:#64748B] [--kepler-navy:#0D2343] [--kepler-red:#C8102E] [--kepler-secondary:#64748B] [--kepler-surface:#FFFFFF]">
+      <a href="#workspace-content" className="sr-only z-50 rounded-lg bg-white p-3 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to workspace</a>
+      <div id="workspace-desktop-navigation" className="sticky top-0 hidden h-dvh shrink-0 lg:block"><AppSidebar collapsed={collapsed} /></div>
+      <dialog ref={dialogRef} id="workspace-mobile-navigation" aria-label="Workspace navigation" onCancel={() => setMobileOpen(false)} onClose={() => { if (!dialogRef.current?.open) setMobileOpen(false); }} onClick={(event) => { if (event.target === event.currentTarget) setMobileOpen(false); }} onKeyDown={(event) => {
+        if (event.key !== "Tab") return;
+        const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), select:not([disabled]), [tabindex="0"]')).filter((element) => element.getClientRects().length > 0);
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }} className="fixed inset-y-0 left-0 m-0 h-dvh max-h-dvh w-[min(304px,calc(100vw-32px))] max-w-none border-0 bg-white p-0 text-[#0D2343] shadow-2xl backdrop:bg-[#0D2343]/45">
+        <AppSidebar mobile onNavigate={() => setMobileOpen(false)} onClose={() => setMobileOpen(false)} />
+      </dialog>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AppHeader title={title} collapsed={collapsed} mobileOpen={mobileOpen} onToggleSidebar={() => setCollapsed((value) => !value)} onOpenMobileSidebar={() => setMobileOpen(true)} />
+        <main id="workspace-content" tabIndex={-1} className="min-w-0 flex-1 px-4 py-5 outline-none sm:px-6 sm:py-7 xl:px-8">{children}</main>
       </div>
     </div>
   );

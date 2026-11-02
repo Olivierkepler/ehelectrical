@@ -2,187 +2,41 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Bell, LogOut, Search, UserRound } from "lucide-react";
+import { Bell, ChevronRight, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search, UserRound } from "lucide-react";
 import { useState } from "react";
-
 import { useAuth } from "@/lib/kepler/AuthProvider";
 import { useOwnProfile } from "@/lib/kepler/hooks/useOwnProfile";
 
-type AppHeaderProps = {
-  title: string;
-};
-
-export default function AppHeader({ title }: AppHeaderProps) {
+export default function AppHeader({ title, collapsed = false, mobileOpen = false, onToggleSidebar, onOpenMobileSidebar }: {
+  title: string; collapsed?: boolean; mobileOpen?: boolean; onToggleSidebar: () => void; onOpenMobileSidebar: () => void;
+}) {
   const { user, signOut } = useAuth();
   const { data: profile } = useOwnProfile();
   const router = useRouter();
   const [avatarBroken, setAvatarBroken] = useState(false);
+  const avatarUrl = (!avatarBroken && profile?.avatarUrl?.trim()) || user?.photoURL?.trim() || null;
+  const label = profile?.displayName?.trim() || user?.displayName?.trim() || profile?.email?.trim() || user?.email?.trim() || "Signed in";
+  const iconButton = "grid h-11 w-11 shrink-0 place-items-center rounded-xl text-[#64748B] outline-none transition-colors enabled:hover:bg-[#F4F6F9] focus-visible:ring-2 focus-visible:ring-[#0D2343]/35";
 
-  const avatarUrl =
-    (!avatarBroken && profile?.avatarUrl?.trim()) ||
-    user?.photoURL?.trim() ||
-    null;
-  const label =
-    profile?.displayName?.trim() ||
-    user?.displayName?.trim() ||
-    profile?.email?.trim() ||
-    user?.email?.trim() ||
-    "Signed in";
-
-  async function handleSignOut() {
-    await signOut();
-    router.replace("/login");
-  }
+  async function handleSignOut() { await signOut(); router.replace("/login"); }
 
   return (
-    <header
-      className="
-        sticky
-        top-0
-        z-20
-        flex
-        h-[56px]
-        items-center
-        justify-between
-        gap-4
-        border-b
-        border-[var(--kepler-border)]
-        bg-[var(--kepler-surface)]
-        px-4
-        sm:px-6
-        lg:px-8
-      "
-    >
-      <div className="min-w-0">
-        <p className="truncate text-[14px] font-semibold tracking-[-0.015em] text-[var(--kepler-ink)]">
-          {title}
-        </p>
+    <header className="sticky top-0 z-20 flex h-[76px] shrink-0 items-center justify-between gap-2 border-b border-[#D9E2EA]/70 bg-white/95 px-3 backdrop-blur-md sm:px-5 xl:px-7">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+        <button type="button" onClick={onOpenMobileSidebar} aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="workspace-mobile-navigation" className={`${iconButton} lg:hidden`}><Menu size={21} /></button>
+        <button type="button" onClick={onToggleSidebar} aria-label={collapsed ? "Expand navigation" : "Collapse navigation"} aria-expanded={!collapsed} aria-controls="workspace-desktop-navigation" className={`${iconButton} hidden lg:grid`}>{collapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />}</button>
+        <div className="flex min-w-0 items-center gap-3 text-[12px]">
+          <span className="hidden text-[#64748B] sm:inline">Workspace</span><ChevronRight size={13} aria-hidden="true" className="hidden text-[#64748B]/60 sm:block" /><span className="truncate font-semibold text-[#0D2343]">{title}</span>
+        </div>
       </div>
-
-      <div className="flex items-center gap-1">
-        <button
-          type="button"
-          disabled
-          aria-label="Search (coming soon)"
-          title="Search will be connected later"
-          className="
-            inline-flex
-            h-11
-            min-w-11
-            items-center
-            justify-center
-            gap-2
-            rounded-[6px]
-            px-2.5
-            text-[var(--kepler-secondary)]
-            outline-none
-            transition-colors
-            focus-visible:ring-2
-            focus-visible:ring-[var(--kepler-navy)]/30
-            enabled:hover:bg-black/[0.03]
-            disabled:cursor-default
-            sm:h-9
-            sm:min-w-0
-            sm:justify-start
-            sm:border
-            sm:border-[var(--kepler-border)]
-            sm:bg-[var(--kepler-background)]
-            sm:px-3
-          "
-        >
-          <Search size={16} strokeWidth={1.75} aria-hidden="true" />
-          <span className="hidden text-[12px] text-[var(--kepler-muted)] sm:inline">
-            Search
-          </span>
-        </button>
-
-        <button
-          type="button"
-          disabled
-          aria-label="Notifications (coming soon)"
-          title="Notifications will be connected later"
-          className="
-            grid
-            h-11
-            w-11
-            place-items-center
-            rounded-[6px]
-            text-[var(--kepler-secondary)]
-            outline-none
-            transition-colors
-            focus-visible:ring-2
-            focus-visible:ring-[var(--kepler-navy)]/30
-            enabled:hover:bg-black/[0.03]
-            disabled:cursor-default
-          "
-        >
-          <Bell size={17} strokeWidth={1.75} aria-hidden="true" />
-        </button>
-
-        <button
-          type="button"
-          onClick={handleSignOut}
-          aria-label="Sign out"
-          title="Sign out"
-          className="
-            grid
-            h-11
-            w-11
-            place-items-center
-            rounded-[6px]
-            text-[var(--kepler-secondary)]
-            outline-none
-            transition-colors
-            hover:bg-black/[0.03]
-            hover:text-[var(--kepler-ink)]
-            focus-visible:ring-2
-            focus-visible:ring-[var(--kepler-navy)]/30
-          "
-        >
-          <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
-        </button>
-
-        <span
-          className="
-            relative
-            grid
-            h-11
-            w-11
-            place-items-center
-            text-[var(--kepler-navy)]
-          "
-          aria-hidden="true"
-          title={label}
-        >
-          <span
-            className="
-              relative
-              grid
-              h-8
-              w-8
-              place-items-center
-              overflow-hidden
-              rounded-full
-              border
-              border-[var(--kepler-border)]
-              bg-[var(--kepler-background)]
-            "
-          >
-            {avatarUrl ? (
-              <Image
-                src={avatarUrl}
-                alt=""
-                width={32}
-                height={32}
-                className="h-full w-full object-cover"
-                unoptimized
-                onError={() => setAvatarBroken(true)}
-              />
-            ) : (
-              <UserRound size={15} strokeWidth={1.75} />
-            )}
-          </span>
-        </span>
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+        <button type="button" disabled aria-label="Search (coming soon)" title="Search is not available yet" className="mr-1 hidden h-10 items-center gap-2 rounded-xl border border-[#D9E2EA]/70 bg-[#F4F6F9]/70 px-3 text-[11px] text-[#64748B] md:flex"><Search size={15} /><span>Search workspace</span></button>
+        <button type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are not available yet" className={iconButton}><Bell size={18} /></button>
+        <button type="button" onClick={handleSignOut} aria-label="Sign out" title="Sign out" className={iconButton}><LogOut size={17} /></button>
+        <div className="ml-1 flex items-center gap-3 border-l border-[#D9E2EA]/70 pl-3 sm:ml-2 sm:pl-4">
+          <span aria-hidden="true" title={label} className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-xl border border-[#D9E2EA] bg-[#F4F6F9] text-[#0D2343]">{avatarUrl ? <Image src={avatarUrl} alt="" width={36} height={36} className="h-full w-full object-cover" unoptimized onError={() => setAvatarBroken(true)} /> : <UserRound size={17} />}</span>
+          <span className="hidden max-w-[130px] truncate text-[12px] font-semibold text-[#0D2343] xl:block">{label}</span>
+        </div>
       </div>
     </header>
   );
