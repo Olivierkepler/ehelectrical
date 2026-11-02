@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowRight, Eye, EyeOff, LoaderCircle } from "lucide-react";
 
-import KeplerLogo from "@/components/kepler/KeplerLogo";
+import KeplerAnimatedLogo from "@/components/branding/KeplerAnimatedLogo";
 import AuthLoadingScreen from "@/components/kepler/AuthLoadingScreen";
 import { useAuth } from "@/lib/kepler/AuthProvider";
 import { formatAuthErrorMessage } from "@/lib/kepler/authErrors";
@@ -127,11 +127,15 @@ export default function LoginPage() {
           className="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,35,67,0.5)_0%,rgba(13,35,67,0.16)_35%,rgba(13,35,67,0.94)_100%)]"
         />
 
-        <div className="relative flex items-start gap-3">
-          <span aria-hidden="true" className="mt-0.5 h-7 w-2.5 -skew-x-12 bg-[var(--kepler-red)]" />
-          <div className="[&_span]:text-white [&_span:first-child]:text-[22px] [&_span:first-child]:font-bold [&_span:last-child]:text-white/75">
-            <KeplerLogo />
-          </div>
+        <div className="relative w-[180px] max-w-full">
+          <KeplerAnimatedLogo
+            width={180}
+            height={74}
+            wordmarkColor="#FFFFFF"
+            taglineColor="#FFFFFF"
+            autoPlay
+            showTagline
+          />
         </div>
 
         <div className="relative max-w-lg pb-2">
