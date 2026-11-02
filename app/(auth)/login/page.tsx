@@ -45,8 +45,19 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmationAttempted, setConfirmationAttempted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const confirmationError = mode === "signUp" && confirmationAttempted
+    ? !confirmPassword
+      ? "Please confirm your password."
+      : password !== confirmPassword
+        ? "Passwords do not match."
+        : null
+    : null;
 
   useEffect(() => {
     if (!loading && user) {
@@ -61,6 +72,12 @@ export default function LoginPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (mode === "signUp") {
+      setConfirmationAttempted(true);
+      if (!confirmPassword || password !== confirmPassword) return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -226,6 +243,49 @@ export default function LoginPage() {
               )}
             </div>
 
+            {mode === "signUp" && (
+              <div>
+                <label
+                  htmlFor="kepler-confirm-password"
+                  className="block text-[13px] font-medium text-[var(--kepler-ink)]"
+                >
+                  Confirm password
+                </label>
+                <div className="relative">
+                  <input
+                    id="kepler-confirm-password"
+                    className={`${inputClass} pr-14`}
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    aria-invalid={Boolean(confirmationError)}
+                    aria-describedby={confirmationError ? "confirm-password-error" : undefined}
+                    disabled={submitting || !configured}
+                  />
+                  <button
+                    type="button"
+                    aria-label={showConfirmPassword ? "Hide confirmation password" : "Show confirmation password"}
+                    aria-pressed={showConfirmPassword}
+                    aria-controls="kepler-confirm-password"
+                    disabled={submitting || !configured}
+                    onClick={() => setShowConfirmPassword((visible) => !visible)}
+                    className="absolute right-1 top-1/2 mt-1.25 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 outline-none transition-colors hover:text-[var(--kepler-navy)] focus-visible:ring-2 focus-visible:ring-[var(--kepler-navy)]/30 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                  </button>
+                </div>
+                {confirmationError && (
+                  <p id="confirm-password-error" className="mt-2 text-[13px] leading-6 text-[var(--kepler-red)]" role="alert">
+                    {confirmationError}
+                  </p>
+                )}
+              </div>
+            )}
+
             {error && (
               <p
                 id="auth-error"
@@ -263,6 +323,9 @@ export default function LoginPage() {
                   onClick={() => {
                     setMode("signUp");
                     setError(null);
+                    setConfirmationAttempted(false);
+                    setConfirmPassword("");
+                    setShowConfirmPassword(false);
                   }}
                 >
                   Create account
@@ -277,6 +340,9 @@ export default function LoginPage() {
                   onClick={() => {
                     setMode("signIn");
                     setError(null);
+                    setConfirmationAttempted(false);
+                    setConfirmPassword("");
+                    setShowConfirmPassword(false);
                   }}
                 >
                   Sign in
