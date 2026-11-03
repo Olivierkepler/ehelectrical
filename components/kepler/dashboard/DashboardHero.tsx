@@ -12,7 +12,7 @@ export default function DashboardHero({ project }: { project: DiscoveredProject 
   const { data: profile } = useOwnProfile();
   const name = profile?.displayName?.trim() || user?.displayName?.trim();
   return (
-    <header className="relative isolate overflow-hidden rounded-[26px] bg-[#0D2343] px-6 py-8 text-white shadow-[0_10px_30px_-15px_rgba(13,35,67,0.45)] sm:px-9 sm:py-9">
+    <header className="relative isolate w-full overflow-hidden rounded-none bg-[#0D2343] px-6 py-8 text-white sm:px-9 sm:py-9">
       <Image src="/dashboard/dashboardHeader.png" alt="" fill priority sizes="(min-width: 1024px) 85vw, 100vw" className="-z-20 object-cover object-[65%_center]" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[linear-gradient(95deg,rgba(13,35,67,0.98)_0%,rgba(13,35,67,0.87)_44%,rgba(13,35,67,0.24)_100%)]" />
       <div aria-hidden="true" className="absolute -bottom-24 right-14 -z-10 h-72 w-20 -skew-x-[24deg] bg-white/[0.055]" />

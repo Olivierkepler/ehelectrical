@@ -85,8 +85,8 @@ function parseDiscoveredProjects(value: unknown): DiscoveredProject[] | null {
 }
 
 /** GET /api/me/projects — membership + legacy-owner discovery portfolio. */
-export async function getMyDiscoveredProjects(): Promise<DiscoveredProject[]> {
-  return dedupeAsync("GET /api/me/projects", () =>
+export async function getMyDiscoveredProjects(userUid: string): Promise<DiscoveredProject[]> {
+  return dedupeAsync(`GET /api/me/projects::${userUid}`, () =>
     authenticatedJson("/api/me/projects", {}, parseDiscoveredProjects),
   );
 }

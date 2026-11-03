@@ -37,7 +37,7 @@ export function useMyProjects() {
     setLoading(true);
     setError(null);
 
-    getMyDiscoveredProjects()
+    getMyDiscoveredProjects(user.uid)
       .then((projects) => {
         if (!cancelled) {
           setData(projects);

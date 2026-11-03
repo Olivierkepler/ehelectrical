@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Bell, ChevronRight, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search, UserRound } from "lucide-react";
+import { Bell, ChevronRight, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search, Sparkles, UserRound } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/kepler/AuthProvider";
 import { useOwnProfile } from "@/lib/kepler/hooks/useOwnProfile";
 
-export default function AppHeader({ title, collapsed = false, mobileOpen = false, onToggleSidebar, onOpenMobileSidebar }: {
-  title: string; collapsed?: boolean; mobileOpen?: boolean; onToggleSidebar: () => void; onOpenMobileSidebar: () => void;
+export default function AppHeader({ title, collapsed = false, mobileOpen = false, aiOpen, aiPanelId, onToggleAI, onToggleSidebar, onOpenMobileSidebar }: {
+  title: string; collapsed?: boolean; mobileOpen?: boolean; aiOpen: boolean; aiPanelId: string; onToggleAI: () => void; onToggleSidebar: () => void; onOpenMobileSidebar: () => void;
 }) {
   const { user, signOut } = useAuth();
   const { data: profile } = useOwnProfile();
@@ -30,6 +30,7 @@ export default function AppHeader({ title, collapsed = false, mobileOpen = false
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+        <button id="workspace-ai-toggle" type="button" onClick={onToggleAI} aria-label={aiOpen ? "Close Kepler AI" : "Open Kepler AI"} aria-expanded={aiOpen} aria-controls={aiPanelId} className="inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-none border border-[#D9E2EA] bg-[#0D2343] text-white outline-none transition-colors hover:bg-[#18385F] focus-visible:ring-2 focus-visible:ring-[#C8102E] focus-visible:ring-offset-2 md:w-auto md:px-3"><Sparkles size={17} aria-hidden="true" /><span className="hidden text-[11px] font-semibold md:inline">Kepler AI</span></button>
         <button type="button" disabled aria-label="Search (coming soon)" title="Search is not available yet" className="mr-1 hidden h-10 items-center gap-2 rounded-xl border border-[#D9E2EA]/70 bg-[#F4F6F9]/70 px-3 text-[11px] text-[#64748B] md:flex"><Search size={15} /><span>Search workspace</span></button>
         <button type="button" disabled aria-label="Notifications (coming soon)" title="Notifications are not available yet" className={iconButton}><Bell size={18} /></button>
         <button type="button" onClick={handleSignOut} aria-label="Sign out" title="Sign out" className={iconButton}><LogOut size={17} /></button>
